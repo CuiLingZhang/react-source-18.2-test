@@ -221,52 +221,6 @@ const localSetTimeout = typeof setTimeout === 'function' ? setTimeout : null;
 const localSetImmediate =
   typeof setImmediate !== 'undefined' ? setImmediate : null; // IE and Node.js + jsdom
 
-// 不同环境采用不同的任务生成方式。最后都调用 performWorkUntilDeadlineform
-let schedulePerformWorkUntilDeadline;
-if (typeof localSetImmediate === 'function') {
-  // Node.js and old IE.
-  // There's a few reasons for why we prefer setImmediate.
-  //
-  // Unlike MessageChannel, it doesn't prevent a Node.js process from exiting.
-  // (Even though this is a DOM fork of the Scheduler, you could get here
-  // with a mix of Node.js 15+, which has a MessageChannel, and jsdom.)
-  // https://github.com/facebook/react/issues/20756
-  //
-  // But also, it runs earlier which is the semantic we want.
-  // If other browsers ever implement it, it's better to use it.
-  // Although both of these would be inferior to native scheduling.
-  schedulePerformWorkUntilDeadline = () => {
-    localSetImmediate(performWorkUntilDeadline);
-  };
-} else if (typeof MessageChannel !== 'undefined') {
-  // DOM and Worker environments.
-  // We prefer MessageChannel because of the 4ms setTimeout clamping.
-  const channel = new MessageChannel();
-  const port = channel.port2;
-  channel.port1.onmessage = performWorkUntilDeadline;
-  schedulePerformWorkUntilDeadline = () => {
-    port.postMessage(null);
-  };
-} else {
-  // We should only fallback here in non-browser environments.
-  schedulePerformWorkUntilDeadline = () => {
-    localSetTimeout(performWorkUntilDeadline, 0);
-  };
-}
-
-/**
- * 调度普通任务：实际没有做什么事情，主要是调用 schedulePerformWorkUntilDeadline
- * @param callback 调用时传入的flushWork
- */
-function requestHostCallback(callback) {
-  // scheduledHostCallback: 调用时传入的flushWork
-  scheduledHostCallback = callback;
-  if (!isMessageLoopRunning) { // 消息循环
-    isMessageLoopRunning = true;
-    schedulePerformWorkUntilDeadline();
-  }
-}
-
 /**
  * 调用 scheduledHostCallback，也就是传入的 flushWork
  */
@@ -312,6 +266,52 @@ const performWorkUntilDeadline = () => {
   // reset this.
   needsPaint = false;
 };
+
+// 不同环境采用不同的任务生成方式。最后都调用 performWorkUntilDeadlineform
+let schedulePerformWorkUntilDeadline;
+if (typeof localSetImmediate === 'function') {
+  // Node.js and old IE.
+  // There's a few reasons for why we prefer setImmediate.
+  //
+  // Unlike MessageChannel, it doesn't prevent a Node.js process from exiting.
+  // (Even though this is a DOM fork of the Scheduler, you could get here
+  // with a mix of Node.js 15+, which has a MessageChannel, and jsdom.)
+  // https://github.com/facebook/react/issues/20756
+  //
+  // But also, it runs earlier which is the semantic we want.
+  // If other browsers ever implement it, it's better to use it.
+  // Although both of these would be inferior to native scheduling.
+  schedulePerformWorkUntilDeadline = () => {
+    localSetImmediate(performWorkUntilDeadline);
+  };
+} else if (typeof MessageChannel !== 'undefined') {
+  // DOM and Worker environments.
+  // We prefer MessageChannel because of the 4ms setTimeout clamping.
+  const channel = new MessageChannel();
+  const port = channel.port2;
+  channel.port1.onmessage = performWorkUntilDeadline;
+  schedulePerformWorkUntilDeadline = () => {
+    port.postMessage(null);
+  };
+} else {
+  // We should only fallback here in non-browser environments.
+  schedulePerformWorkUntilDeadline = () => {
+    localSetTimeout(performWorkUntilDeadline, 0);
+  };
+}
+
+/**
+ * 调度普通任务：实际没有做什么事情，主要是调用 schedulePerformWorkUntilDeadline
+ * @param callback 调用时传入的flushWork
+ */
+function requestHostCallback(callback) {
+  // scheduledHostCallback: 调用时传入的flushWork
+  scheduledHostCallback = callback;
+  if (!isMessageLoopRunning) { // 消息循环
+    isMessageLoopRunning = true;
+    schedulePerformWorkUntilDeadline();
+  }
+}
 
 /**
  * 核心就是调用 workLoop
@@ -557,3 +557,24 @@ function handleTimeout(currentTime) {
     }
   }
 }
+
+export {
+  ImmediatePriority as unstable_ImmediatePriority,
+  UserBlockingPriority as unstable_UserBlockingPriority,
+  NormalPriority as unstable_NormalPriority,
+  IdlePriority as unstable_IdlePriority,
+  LowPriority as unstable_LowPriority,
+  // unstable_runWithPriority,
+  // unstable_next,
+  unstable_scheduleCallback,
+  // unstable_cancelCallback,
+  // unstable_wrapCallback,
+  // unstable_getCurrentPriorityLevel,
+  shouldYieldToHost as unstable_shouldYield,
+  // unstable_requestPaint,
+  // unstable_continueExecution,
+  // unstable_pauseExecution,
+  // unstable_getFirstCallbackNode,
+  getCurrentTime as unstable_now,
+  // forceFrameRate as unstable_forceFrameRate,
+};

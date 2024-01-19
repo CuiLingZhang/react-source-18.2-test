@@ -1,10 +1,9 @@
-import CreateElementTest from "./test/createElementTest";
+import Test from "./test";
 
 function App() {
   return (
     <div className="App">
-      <CreateElementTest />
-      <p>123</p>
+      <Test />
     </div>
   );
 }
