@@ -85,24 +85,24 @@ React 也采用了这个技术，所以叫做 Fiber 双缓冲。
 
    createRoot 时创建：
 
-   <img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240117174217138.png" alt="image-20240117174217138" style="zoom:67%;" />
+   <img src="../../public/assets/images/mount-root.png" alt="mount-root" style="zoom:67%;" />
 
 ​	进入 mount 流程：
 
 ​		右边的tree就是 workInProgress fiber tree
 
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240117175243068.png" alt="image-20240117175243068" style="zoom:67%;" />
+<img src="../../public/assets/images/mount-tree.png" alt="mount-tree" style="zoom:67%;" />
 
 ​	render 阶段完毕后：
 
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240117175216947.png" alt="image-20240117175216947" style="zoom:67%;" />
+<img src="../../public/assets/images/mount-render.png" alt="mount-render" style="zoom:67%;" />
 
 
 
 2. update 阶段
 
-   <img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240117175354147.png" alt="image-20240117175354147" style="zoom:67%;" />
+   <img src="../../public/assets/images/update-commit.png" alt="update-commit" style="zoom:67%;" />
 
    ​	然后 render 阶段完毕后左边就是 current fiber tree 了：
 
-   <img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240117175441304.png" alt="image-20240117175441304" style="zoom:67%;" />
+   <img src="../../public/assets/images/update-render.png" alt="update-render" style="zoom:67%;" />

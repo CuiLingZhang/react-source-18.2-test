@@ -26,4 +26,4 @@
 
 
 
-<img src="C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240115172200110.png" alt="image-20240115172200110"  />
+<img src="../../../../public/assets/images/schedule-flow.png" alt="schedule-flow"  />

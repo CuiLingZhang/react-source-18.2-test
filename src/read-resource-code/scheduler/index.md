@@ -8,14 +8,14 @@
 
 一棵树在填写的时候遵循：”从左往右，从上往下” 的原则
 
-![image-20240116173350627](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240116173350627.png)
+![image-20240116173350627](../../../public/assets/images/complete-tree.png)
 
 ## 1.3 完全树中的数值
 
 - 最大堆：父节点的数值大于或等于子节点
 - 最大堆：父节点的数值小于或等于子节点
 
-![image-20240116173808930](C:\Users\Administrator\AppData\Roaming\Typora\typora-user-images\image-20240116173808930.png)
+![image-20240116173808930](../../../public/assets/images/complete-tree-value.png)
 
 ## 1.4 堆的实现
 
